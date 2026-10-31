@@ -29,3 +29,9 @@ export type Assignment = {
   branchId: string | null;
   rule: Rule;
 };
+
+export type AssignmentRecord = {
+  orderId: string;
+  branchId: string | null;
+  createdAt: string;
+};

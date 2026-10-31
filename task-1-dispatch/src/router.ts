@@ -32,7 +32,9 @@ export function assignBranch(order: Order, branches: Branch[]): Assignment {
     return {orderId: order.id, branchId: cityBranches[0].id, rule: 'city'}
   }
 
-  
+  // TODO: limit
+
+   
 
   const nearest = findNearest(order, own);
   if (nearest) return { orderId: order.id, branchId: nearest.id, rule: 'geo' };

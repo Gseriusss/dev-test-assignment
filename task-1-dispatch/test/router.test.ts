@@ -79,4 +79,7 @@ test('geo: если в городе несколько филиалов, выб�
   assert.deepEqual(res, {orderId: 'o-1', branchId: 'b-ala-2', rule: 'geo'})
 });
 
-test('лимит: заполненный филиал пропускается', () => {});
+test('лимит: заполненный филиал пропускается', () => {
+  const res = assignBranch(order({city: "Алматы"}), branches);
+  assert.deepEqual(res, {})
+});
