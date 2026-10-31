@@ -13,7 +13,26 @@ export function assignBranch(order: Order, branches: Branch[]): Assignment {
     return { orderId: order.id, branchId: own[0].id, rule: 'single' };
   }
 
-  // TODO: pickup_point, city
+  // TODO: pickup_point
+
+  if (order.pickupPointId) {
+    const pickupBranch = own.find((b) => 
+      b.pickupPointIds.includes(order.pickupPointId!)
+    );
+    if (pickupBranch) {
+      return { orderId: order.id, branchId: pickupBranch.id, rule: 'pickup_point' };
+    }
+  }
+
+  // TODO: city
+
+  const cityBranches = own.filter((b) => b.city === order.city);
+
+  if (cityBranches.length === 1) {
+    return {orderId: order.id, branchId: cityBranches[0].id, rule: 'city'}
+  }
+
+  
 
   const nearest = findNearest(order, own);
   if (nearest) return { orderId: order.id, branchId: nearest.id, rule: 'geo' };
