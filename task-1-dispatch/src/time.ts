@@ -13,6 +13,19 @@ export function getAlmatyDate(date: string): string {
   return almatyDate;
 }
 
+export function isValidDate(date: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return false;
+  }
+
+  const parsed = new Date(`${date}T00:00:00.000Z`);
+
+  return (
+    !Number.isNaN(parsed.getTime()) &&
+    parsed.toISOString().slice(0, 10) === date
+  );
+}
+
 export function countDailyOrders( branchId: string, date: string, assignments: AssignmentRecord[]): number {
     return assignments.filter((assignment) => {
       return (
