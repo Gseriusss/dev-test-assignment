@@ -30,6 +30,13 @@ const order = (over: Partial<Order>): Order => ({
   ...over,
 });
 
+const assignment = (over: Partial<AssignmentRecord>): AssignmentRecord => ({
+  orderId: 'old-order',
+  branchId: 'b-ala-1',
+  createdAt: '2026-11-01T02:00:00Z',
+  ...over,
+});
+
 const almaty = branch({ id: 'b-ala', city: 'Алматы', lat: 43.2567, lon: 76.9286 });
 const astana = branch({ id: 'b-ast', city: 'Астана', lat: 51.128, lon: 71.43 });
 
@@ -79,7 +86,15 @@ test('geo: если в городе несколько филиалов, выб�
   assert.deepEqual(res, {orderId: 'o-1', branchId: 'b-ala-2', rule: 'geo'})
 });
 
-test('лимит: заполненный филиал пропускается', () => {
-  const res = assignBranch(order({city: "Алматы"}), branches, []);
-  assert.deepEqual(res, {})
+test('limit: оставляет заказ в выбранном филиале, если лимит не исчерпан', () => {
+  const assignments: AssignmentRecord[] = [assignment({ orderId: 'old-1' })];
+  const res = assignBranch(order({ city: 'Алматы' }), branches, assignments);
+  assert.equal(res.branchId, 'b-ala-1');
+  assert.equal(res.rule, 'geo');
+});
+
+test('manual игнорирует dailyLimit', () => {
+  const assignments: AssignmentRecord[] = [assignment({ orderId: 'old-1' }), assignment({ orderId: 'old-2' }), assignment({ orderId: 'old-3' })];
+  const res = assignBranch(order({ manualBranchId: 'b-ala-1' }), branches, assignments);
+  assert.deepEqual(res, {orderId: 'o-1', branchId: 'b-ala-1', rule: 'manual'});
 });
